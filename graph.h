@@ -7,6 +7,8 @@
 #include "ubication.h"
 #include "probability.h"
 
+int color = 0;
+
 Node *addWordsToGraph(Node **graph, Word *words);
 Node *addWordToGraph(Node **graph, Word *word);
 char *getPrediction(Node *graph, char *phrase);
@@ -38,26 +40,24 @@ void addGraphFileToGraph(Node **graph, FILE *graphFile){
       deleteWords(words);
     }
   }
+  color++;
   fclose(graphFile);
   assignUbications(*graph);
   updateConditionalProbabilities(*graph);
 }
 void addLinksToGraph(Node *node, Word *words, Node **graph){
   for(; words!=NULL; words = words->next){
-    Node *nextNode = searchOrInsertNode(graph, words->word);
-    Link *link = searchLink(node->links, nextNode);
-    if(link==NULL)
-      link = includeLink(&node->links, allocateLink(nextNode));
+    Link *link = searchOrInsertLink(node, searchOrInsertNode(graph, words->word));
     if(link!=NULL)
       link->count += words->count;
   }
 }
 Node *addWordToGraph(Node **graph, Word *word){
-  Node *node = searchNode(*graph, word->word);
-  if(node==NULL)
-    node = includeNode(graph, allocateNode(word->word));
-  if(node!=NULL)
+  Node *node = searchOrInsertNode(graph, word->word);
+  if(node!=NULL){
     node->count += word->count;
+    node->color = color;
+  }
   return node;
 }
 void addTextFileToGraph(Node **graph, FILE *textFile){
@@ -67,6 +67,7 @@ void addTextFileToGraph(Node **graph, FILE *textFile){
       deleteWords(words);
     }
   }
+  color++;
   fclose(textFile);
   assignUbications(*graph);
   updateConditionalProbabilities(*graph);

@@ -24,6 +24,7 @@ struct Node{
   Vector ubication;
   Link *links;
   Node *next;
+  int color;
 };
 struct Link{
   unsigned int count;

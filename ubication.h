@@ -5,7 +5,7 @@
 #include "vector.h"
 #include <stdbool.h>
 
-#define FORCE_CONST 50.0
+#define FORCE_CONST 100.0
 #define UBICATION_CONST 0.5
 #define ATTRACTION_CONST 1.0
 #define REPULSION_CONST 1000.0

@@ -5,12 +5,12 @@
 #include "graph.h"
 
 enum{
-  RED_COLOR = 0,
-  YELLOW_COLOR,
-  BLACK_COLOR,
-  GRAY_COLOR,
+  BLACK_COLOR = 0,
+  BLUE_COLOR,
   GREEN_COLOR,
-  BLUE_COLOR
+  RED_COLOR,
+  YELLOW_COLOR,
+  GRAY_COLOR
 };
 
 void changeColor(int color);
@@ -31,7 +31,7 @@ void drawNodeLinks(Node *nodes){
 }
 void drawLine(int color, Vector ubication1, Vector ubication2){
   changeColor(color);
-  glBegin(GL_LINE_LOOP);
+  glBegin(GL_LINES);
   glVertex3d(ubication1.x, ubication1.y, 0);
   glVertex3d(ubication2.x, ubication2.y, 0);
   glEnd();
@@ -51,7 +51,7 @@ void changeColor(int color){
     glColor3f(0.0, 0.0, 1.0);
     break;
     case GREEN_COLOR:
-    glColor3f(0.0, 1.0, 0.0);
+    glColor3f(0.25, 1.0, 0.25);
     break;
     case BLACK_COLOR:
     default:
@@ -60,7 +60,7 @@ void changeColor(int color){
 }
 void drawNodes(Node *nodes){
   for(; nodes!=NULL; nodes = nodes->next)
-    drawString(BLACK_COLOR, nodes->ubication, nodes->word);
+    drawString(nodes->color, nodes->ubication, nodes->word);
 }
 void drawString(int color, Vector ubication, char *string){
   changeColor(color);

@@ -21,16 +21,14 @@ Word *getWordsFromPhrase(char *phrase){
 }
 Word *getWordsFromGraphFile(FILE *graphFile){
   Word *words = NULL;
-  if(graphFile!=NULL)
-    while(insertWordFromGraphFile(&words, graphFile))
-      ;
+  while(insertWordFromGraphFile(&words, graphFile))
+    ;
   return words;
 }
 Word *getWordsFromTextFile(FILE *textFile){
   Word *words = NULL;
-  if(textFile!=NULL)
-    while(insertWordFromTextFile(&words, textFile))
-      ;
+  while(insertWordFromTextFile(&words, textFile))
+    ;
   return words;
 }
 bool insertWordFromTextFile(Word **pointer, FILE *textFile){
@@ -43,7 +41,6 @@ bool insertWordFromTextFile(Word **pointer, FILE *textFile){
 }
 bool parseWordFromFile(char *buffer, FILE *file){
   for(int i = 0, c = getc(file); i<MAXIMUM_WORD_LENGTH; i++, c = getc(file)){
-    printf("%c, %d\n", c,c);
     if(c==EOF)
       return false;
     else if(isSpecialAlphabetic(c))
