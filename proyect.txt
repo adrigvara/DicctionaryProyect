@@ -1,0 +1,42 @@
+Una empresa de aplicaciones móviles quiere desarrollar su propio software de texto predictivo
+basado en distribución probabilística, por lo que debe realizar un programa que utilice un grafo
+de palabras conectadas por la frecuencia basado en un diccionario (texto de carga de palabras).
+Las palabras se van conectando entre sí por la secuencia del texto y será interrumpida
+sólo por signos de puntuación (punto, comas, punto y coma, signos de admiración, etc).
+Cada nodo almacena la palabra y su probabilidad de ocurrencia P(n) donde se determina como:
+
+P(n)= d/m
+
+Donde n es el nodo, d es el número de ocurrencias de la palabra
+contenida en n y m el número total de palabras que forman el diccionario.
+El costo de una arista que conecte dos nodos estará
+determinado por la fórmula bayesiana de eventos dependientes:
+
+P(n|b) = (P(b|n) P(b)) / P(n)
+
+Donde b denota la palabra antecesora y
+
+P(b|n) = P(n y b) / P(b)
+
+P(n y b) es la probabilidad de que ambas palabras se encuentren
+en la misma oración (para evitar una recursión infinita).
+
+P(n y b) = d/m
+
+Donde d es el número de ocurrencias de n seguida de b y m es el número total de n seguida de otras palabras
+
+Hacer un programa en C que de modo gráfico usando OpenGL:
+
+-       Lea un archivo dado por el usuario, que contenga un texto normal (Ver archivo anexo).
+-       Genere y muestre un grafo conectado y dirigido, basado en las palabras del archivo.
+-       Guarde el grafo y que pueda anexar otro archivo de texto al grafo, actualizando
+        el grafo existente y sin borrar los datos previos.
+-       Muestre nodos y sus valores (P(n))
+-       Muestre aristas y sus pesos (P(b|n))
+-       Permita capturar en tiempo de ejecución una frase y que palabra por palabra haga
+        la predicción de la palabra siguiente basándose en el camino más corto (Dijkstra)
+        desde la primera palabra capturada, una vez capturada debe actualizar el grafo. (2 PTS)
+-       Tenga una opción para desplegar las frases más comunes ordenadas de la más común a la menos
+        dada una palabra inicial por el usuario. (A N nodos y a 5 o 10 frases) (2 PTS)
+-       Debe mostrar las palabras y las frases en un color distinto.
+-       Tener una opción de limpiar todo el grafo y volver a empezar con uno nuevo.
