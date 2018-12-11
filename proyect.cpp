@@ -5,12 +5,24 @@
 #include "graph.h"
 #include "drawing.h"
 
+enum{
+  ADD_TEXT_FILE = 1,
+  ADD_GRAPH_FILE,
+  SAVE_GRAPH,
+  DELETE_NODES,
+  CLEAR_FILE_PATH
+};
+
+#define MAXIMUM_FILE_PATH_LENGTH 100
+
+char filePath[MAXIMUM_FILE_PATH_LENGTH+1];
 double translation[3] = {0.0, 0.0, -100.0};
 Node *graph = NULL;
 int mainWindow = 0;
 int forcesEnable = false;
 
-FILE *getFile();
+FILE *getWriteFile();
+FILE *getReadFile();
 void display();
 void idle();
 void reshape(int width, int height);
@@ -26,19 +38,43 @@ int main(int argc, char **argv){
   glutInitWindowSize(683, 768);
   glutInitWindowPosition(0, 0);
   mainWindow = glutCreateWindow("Dictionary Proyect");
-  glutDisplayFunc(display);
+  GLUI_Master.set_glutDisplayFunc(display);
   GLUI_Master.set_glutSpecialFunc(special);
-  glutReshapeFunc(reshape);
+  GLUI_Master.set_glutReshapeFunc(reshape);
   GLUI_Master.set_glutIdleFunc(idle);
-  glutKeyboardFunc(keyboard);
+  GLUI_Master.set_glutKeyboardFunc(keyboard);
   GLUI *gluiWindow = GLUI_Master.create_glui_subwindow(mainWindow, GLUI_SUBWINDOW_LEFT);
   gluiWindow->set_main_gfx_window(mainWindow);
-  gluiWindow->add_checkbox("Enable forces?", &forcesEnable, -1, callback);
+  GLUI_Panel *filesPanel = gluiWindow->add_panel("Files", GLUI_PANEL_EMBOSSED);
+  gluiWindow->add_edittext_to_panel(filesPanel, "File path", GLUI_EDITTEXT_TEXT, filePath, -1, callback);
+  gluiWindow->add_button_to_panel(filesPanel, "Add text file", ADD_TEXT_FILE, callback);
+  gluiWindow->add_button_to_panel(filesPanel, "Save graph", SAVE_GRAPH, callback);
+  gluiWindow->add_button_to_panel(filesPanel, "Load graph", ADD_GRAPH_FILE, callback);
+  gluiWindow->add_button_to_panel(filesPanel, "Clear path", CLEAR_FILE_PATH, callback);
+  GLUI_Panel *optionsPanel = gluiWindow->add_panel("Options", GLUI_PANEL_EMBOSSED);
+  gluiWindow->add_checkbox_to_panel(optionsPanel, "Enable forces?", &forcesEnable, -1, callback);
+  gluiWindow->add_button_to_panel(optionsPanel, "Delete Graph", DELETE_NODES, callback);
   glutMainLoop();
   deleteNodes(graph);
 }
 void callback(int id){
-
+  switch(id){
+    case ADD_TEXT_FILE:
+    addTextFileToGraph(&graph, fopen(filePath, "r"));
+    break;
+    case ADD_GRAPH_FILE:
+    addGraphFileToGraph(&graph, fopen(filePath, "r"));
+    break;
+    case SAVE_GRAPH:
+    saveNodes(graph, fopen(filePath, "w"));
+    break;
+    case DELETE_NODES:
+    deleteNodes(graph);
+    break;
+    case CLEAR_FILE_PATH:
+    memset(filePath, '\0', MAXIMUM_FILE_PATH_LENGTH+1);
+    break;
+  }
 }
 void idle(){
   if(forcesEnable)
@@ -106,15 +142,15 @@ void keyboard(unsigned char key, int x, int y){
     break;
     case 'T':
     case 't':
-    addTextFileToGraph(&graph, getFile());
+    addTextFileToGraph(&graph, getReadFile());
     break;
     case 'G':
     case 'g':
-    addGraphFileToGraph(&graph, getFile());
+    addGraphFileToGraph(&graph, getReadFile());
     break;
     case 'S':
     case 's':
-    saveNodes(graph, getGraphFile());
+    saveNodes(graph, getWriteFile());
     break;
     case 'D':
     case 'd':
@@ -123,15 +159,15 @@ void keyboard(unsigned char key, int x, int y){
     break;
   }
 }
-FILE *getFile(){
+FILE *getReadFile(){
   char filePath[50];
-  printf("File path:\n");
+  printf("File Path:\n");
   scanf("%s", filePath);
   return fopen(filePath, "r");
 }
-FILE *getGraphFile(){
+FILE *getWriteFile(){
   char filePath[50];
-  printf("File path:\n");
+  printf("File Path:\n");
   scanf("%s", filePath);
   return fopen(filePath, "w");
 }

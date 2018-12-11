@@ -34,6 +34,8 @@ char *getPrediction(Node *graph, char *phrase){
   return phrase;
 }
 void addGraphFileToGraph(Node **graph, FILE *graphFile){
+  if(graphFile==NULL)
+   return;
   while(!feof(graphFile)){
     if(Word *words = getWordsFromGraphFile(graphFile)){
       addLinksToGraph(addWordToGraph(graph, words), words->next, graph);
@@ -61,6 +63,8 @@ Node *addWordToGraph(Node **graph, Word *word){
   return node;
 }
 void addTextFileToGraph(Node **graph, FILE *textFile){
+  if(textFile==NULL)
+   return;
   while(!feof(textFile)){
     if(Word *words = getWordsFromTextFile(textFile)){
       addWordsToGraph(graph, words);
@@ -83,6 +87,8 @@ Node *addWordsToGraph(Node **graph, Word *words){
   return NULL;
 }
 void saveNodes(Node *nodes, FILE *graphFile){
+  if(graphFile==NULL)
+   return;
   for(; nodes!=NULL; nodes = nodes->next){
     fprintf(graphFile, "%s ", nodes->word);
     fprintf(graphFile, "%d ", nodes->count);

@@ -18,16 +18,20 @@ void drawGraph(Node *graph);
 void drawLine(int color, Vector ubication1, Vector ubication2);
 void drawNodeLinks(Node *nodes);
 void drawNodes(Node *nodes);
-void drawString(int color, Vector ubication, char *string);
+void drawString(int color, Vector ubication, char *string, void *font);
 
 void drawGraph(Node *graph){
   drawNodeLinks(graph);
   drawNodes(graph);
 }
 void drawNodeLinks(Node *nodes){
+  char buffer[11];
   for(; nodes!=NULL; nodes = nodes->next)
-    for(Link *links = nodes->links; links!=NULL; links = links->next)
+    for(Link *links = nodes->links; links!=NULL; links = links->next){
       drawLine(GRAY_COLOR, nodes->ubication, links->node->ubication);
+      sprintf(buffer, "(%1.5lf)", links->probability);
+      drawString(GRAY_COLOR, probabilityUbication(nodes, links->node), buffer, GLUT_BITMAP_HELVETICA_10);
+    }
 }
 void drawLine(int color, Vector ubication1, Vector ubication2){
   changeColor(color);
@@ -59,14 +63,17 @@ void changeColor(int color){
   }
 }
 void drawNodes(Node *nodes){
-  for(; nodes!=NULL; nodes = nodes->next)
-    drawString(nodes->color, nodes->ubication, nodes->word);
+  char buffer[101];
+  for(; nodes!=NULL; nodes = nodes->next){
+    sprintf(buffer, "%s(%1.5lf)", nodes->word, nodes->probability);
+    drawString(nodes->color, nodes->ubication, buffer, GLUT_BITMAP_HELVETICA_18);
+  }
 }
-void drawString(int color, Vector ubication, char *string){
+void drawString(int color, Vector ubication, char *string, void *font){
   changeColor(color);
   glRasterPos3d(ubication.x, ubication.y, 0);
   for(int i = 0; string[i]!='\0'; i++)
-    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, string[i]);
+    glutBitmapCharacter(font, string[i]);
 }
 
 #endif
